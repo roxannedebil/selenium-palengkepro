@@ -8,7 +8,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 driver = webdriver.Chrome()
-driver.get("https://palengkeproph-test-prod.vercel.app/")
+# driver.get("https://palengkeproph-test-prod.vercel.app/")
+driver.get("http://192.168.3.249:3000/")
 driver.maximize_window()
 
 wait = WebDriverWait(driver, 10)

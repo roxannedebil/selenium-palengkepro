@@ -8,7 +8,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import StaleElementReferenceException, ElementClickInterceptedException
-from menu_helper import click_menu_item  # your existing helper
+from tests.menu_helper import click_menu_item
 
 driver = webdriver.Chrome()
 driver.get("https://palengkeproph-test-prod.vercel.app/")
@@ -21,20 +21,21 @@ def slow_type(element, text, delay=0.2):
         element.send_keys(char)
         time.sleep(delay)
 
-def click_upload_stalls(driver, timeout=20):
-    # retry loop to handle re-render
-    end_time = time.time() + timeout
-    while time.time() < end_time:
-        try:
-            btn = driver.find_element(By.XPATH, "//button[normalize-space()='Upload Stalls']")
-            driver.execute_script("arguments[0].scrollIntoView({block:'center'});", btn)
-            btn.click()
-            print("✔ Upload Stalls clicked successfully")
-            return btn
-        except (StaleElementReferenceException, ElementClickInterceptedException):
-            time.sleep(0.3)
-    print("x - Failed to click Upload Stalls")
-    return None
+# def click_upload_stalls(driver, timeout=20):
+#     # retry loop to handle re-render
+#     end_time = time.time() + timeout
+#     while time.time() < end_time:
+#         try:
+#             btn = driver.find_element(By.XPATH, "//button[normalize-space(text())='Upload Stalls']")
+#             driver.execute_script("arguments[0].scrollIntoView({block:'center'});", btn)
+#
+#             btn.click()
+#             print("✔ Upload Stalls clicked successfully")
+#             return btn
+#         except (StaleElementReferenceException, ElementClickInterceptedException):
+#             time.sleep(0.3)
+#     print("x - Failed to click Upload Stalls")
+#     return None
 
 def upload_file(input_selector, file_path):
     # uploads a file to an <input type='file'> element.
@@ -66,22 +67,29 @@ try:
     time.sleep(0.5)  # wait for React rendering
 
     # close drawer
-    drawer_toggle = WebDriverWait(driver, 10).until(
-        lambda d: d.find_element(By.CSS_SELECTOR, "button.MuiButtonBase-root.MuiIconButton-root")
+    # drawer_toggle = WebDriverWait(driver, 10).until(
+    #     lambda d: d.find_element(By.CSS_SELECTOR, "button.MuiButtonBase-root.MuiIconButton-root")
+    # )
+    # drawer_toggle.click()
+    # time.sleep(0.3)
+    # print("✔ Drawer toggled (closed if it was open)")
+
+    wait = WebDriverWait(driver, 10)
+    upload_btn = wait.until(
+        EC.element_to_be_clickable((By.XPATH, "//button[contains(., 'Upload Stalls')]"))
     )
-    drawer_toggle.click()
-    time.sleep(0.3)
-    print("✔ Drawer toggled (closed if it was open)")
+    upload_btn.click()
 
+    # upload_stalls_btn = click_upload_stalls(driver)
+    # if not upload_stalls_btn:
+    #     raise Exception("x - Upload Stalls button could not be clicked.")
 
-    upload_stalls_btn = click_upload_stalls(driver)
-    if not upload_stalls_btn:
-        raise Exception("x - Upload Stalls button could not be clicked.")
 
     dl_template_btn = driver.find_element(By.XPATH, "//button[normalize-space()='Download Excel Template']")
     dl_template_btn.click()
     print("✔ Download Excel button clicked successfully")
     time.sleep(2)
+
 
     select_file_btn = driver.find_element(By.XPATH, "//button[normalize-space()='Select Excel File']")
     select_file_btn.click()
@@ -89,7 +97,6 @@ try:
     time.sleep(2)
 
     # close file chooser dialog
-    # ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     pyautogui.press('esc')
     time.sleep(2)
 
@@ -103,6 +110,11 @@ try:
     print("✔ Add to Map & Edit Layout button clicked successfully")
     time.sleep(2)
 
+    # cancel_upload_btn = driver.find_element(By.XPATH, "//button[normalize-space()='Cancel']")
+    # cancel_upload_btn.click()
+    # print("✔ Canceled Upload")
+    # time.sleep(2)
+
     save_layout_btn = driver.find_element(By.XPATH, "//button[normalize-space()='Save Layout']")
     save_layout_btn.click()
     alert = driver.switch_to.alert
@@ -110,6 +122,10 @@ try:
     alert.accept()
     print("✔ Save Layout button clicked successfully")
     time.sleep(2)
+
+    # click map view button
+    # map_view_btn = driver.find_element(By.XPATH, "//button[normalize-space()='Map']")
+    # map_view_btn.click()
 
     electric_label = driver.find_element(By.XPATH, "//label[.//span[text()='Electricity']]")
     electric_label.click()
@@ -136,11 +152,13 @@ try:
     time.sleep(2)
 
     # add choosing of dropdown
+    # to add
 
-    edit_layout_btn = driver.find_element(By.XPATH, "//button[normalize-space()='Edit Layout']")
-    save_layout_btn.click()
-    print("✔ Edit Layout button clicked successfully")
-    time.sleep(2)
+
+    # edit_layout_btn = driver.find_element(By.XPATH, "//button[normalize-space()='Edit Layout']")
+    # save_layout_btn.click()
+    # print("✔ Edit Layout button clicked successfully")
+    # time.sleep(2)
 
     export_map_btn = driver.find_element(By.XPATH, "//button[normalize-space()='Export Map (PNG)']")
     export_map_btn.click()
@@ -169,8 +187,8 @@ try:
     time.sleep(2)
 
     # click table button
-    save_layout_btn = driver.find_element(By.XPATH, "//button[normalize-space()='Table']")
-    save_layout_btn.click()
+    table_view_btn = driver.find_element(By.XPATH, "//button[normalize-space()='Table']")
+    table_view_btn.click()
 
 
 

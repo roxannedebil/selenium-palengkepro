@@ -8,7 +8,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import StaleElementReferenceException, ElementClickInterceptedException
-from menu_helper import click_menu_item  # your existing helper
+from tests.menu_helper import click_menu_item
 
 driver = webdriver.Chrome()
 driver.get("https://palengkeproph-test-prod.vercel.app/")
@@ -50,7 +50,6 @@ try:
     time.sleep(0.3)
     print("✔ Drawer toggled (closed if it was open)")
 
-    # Wait for table
     # Wait for table to appear using XPath
     table = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.XPATH, "//*[@id='root']/div/div[2]/div/div/div[3]/table"))
